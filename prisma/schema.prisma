@@ -1,0 +1,360 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  client
+  agent
+}
+
+enum Poste {
+  directeur
+  secretaire
+  caissier
+  gerant
+}
+
+enum Sexe {
+  homme
+  femme
+}
+
+enum Ville {
+  Bandundu
+  Kindu
+  Butembo
+  Kinshasa
+  Mbujimayi
+  Lubumbashi
+  Kananga
+  Kisangani
+  Goma
+  Bukavu
+  Tshikapa
+  Kolwezi
+  Likasi
+  Kikwit
+  Uvira
+  Bunia
+  Kalemie
+  Mbandaka
+  Matadi
+}
+
+enum MoyenPaiment {
+  cache
+  banque
+  mobile
+  cheque
+  autres
+}
+
+enum StatutAchat {
+  EN_COURS
+  TERMINE
+  ANNULE
+}
+
+enum StatutVente {
+  EN_ATTENTE
+  CONFIRME
+  REMBOURSE
+  ANNULE
+}
+
+enum TypeClient {
+  ordinaire
+  nouveau
+  client
+  fournisseur
+  agent
+}
+
+// This is the main model for the application
+
+model Entreprise {
+  id           Int     @id @default(autoincrement())
+  nom          String  @unique
+  encronyme    String  @unique
+  code_postale String  @unique
+  adresse      String
+  tel          String  @unique
+  site         String?
+  email        String  @unique
+  description  String?
+  logo         String?
+}
+
+model Utilisateur {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  nom         String
+  postnom     String
+  nom_complet String?
+  sexe        Sexe?
+  role        Role          @default(client)
+  poste       Poste?
+  picture     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Adresse     Adresse[]
+  Contact     Contact[]
+  Produit     Produit[]
+  Vente       Vente[]
+  Achat       Achat[]
+  Teneur      Teneur[]
+  Devise      Devise[]
+  Panier      Panier[]
+  Reservation Reservation[]
+  Commande    Commande[]
+}
+
+// model Poste {
+//   id               Int         @id @default(autoincrement())
+//   titre            String      @db.VarChar(255)
+//   utilisateurId    String
+//   utilisateur      Utilisateur @relation(fields: [utilisateurId], references: [id])
+//   createdAt        DateTime    @default(now())
+//   updatedAt        DateTime    @updatedAt
+// }
+
+model Adresse {
+  id            Int           @id @default(autoincrement())
+  ville         String
+  commune       String // Delete this attr.
+  adresse       String
+  utilisateurId Int?
+  utilisateur   Utilisateur?  @relation(fields: [utilisateurId], references: [id])
+  fournisseurId Int?
+  fournisseur   Fournisseur?  @relation(fields: [fournisseurId], references: [id])
+  Reservation   Reservation[]
+  Commande      Commande[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Contact {
+  id            Int           @id @default(autoincrement())
+  tel           String        @unique
+  utilisateurId Int?
+  utilisateur   Utilisateur?  @relation(fields: [utilisateurId], references: [id])
+  fournisseurId Int?
+  fournisseur   Fournisseur?  @relation(fields: [fournisseurId], references: [id])
+  Reservation   Reservation[]
+  Commande      Commande[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model Fournisseur {
+  id          Int           @id @default(autoincrement())
+  nom         String
+  email       String        @unique
+  code_postal String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  Vente       Vente[]
+  Achat       Achat[]
+  Adresse     Adresse[]
+  Contact     Contact[]
+  Reservation Reservation[]
+  Commande    Commande[]
+}
+
+model Teneur {
+  id            Int         @id @default(autoincrement())
+  valeur        Float       @unique
+  utilisateurId Int
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  Produit       Produit[]
+}
+
+model Devise {
+  id            Int         @id @default(autoincrement())
+  nom           String      @unique
+  code          String      @unique @db.VarChar(3)
+  symbole       String      @db.VarChar(5)
+  utilisateurId Int
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  Produit       Produit[]
+  Paiement      Paiement[]
+}
+
+model Produit {
+  id            Int            @id @default(autoincrement())
+  designation   String
+  prix          Float
+  qtte          Int            @default(0)
+  description   String
+  deviseId      Int
+  devise        Devise         @relation(fields: [deviseId], references: [id])
+  teneurId      Int
+  teneur        Teneur         @relation(fields: [teneurId], references: [id])
+  utilisateurId Int
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  DetailPanier  DetailPanier[]
+}
+
+// Models de la Vente...
+
+model Paiement {
+  id             Int          @id @default(autoincrement())
+  montant        Float
+  moyen_paiement MoyenPaiment
+  deviseId       Int
+  devise         Devise       @relation(fields: [deviseId], references: [id])
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  Achat          Achat[]
+  Vente          Vente[]
+  Commande       Commande[]
+}
+
+model Vente {
+  id              Int          @id @default(autoincrement())
+  statut          StatutVente  @default(EN_ATTENTE)
+  total_ttc       Float
+  total_ht        Float
+  type_acheteur   TypeClient
+  clientId        Int?
+  enregisterParId Int
+  fournisseurId   Int?
+  agentId         Int?
+  paiementId      Int
+  panierId        Int
+  panier          Panier       @relation(fields: [panierId], references: [id])
+  utilisateur     Utilisateur  @relation(fields: [enregisterParId], references: [id])
+  fournisseur     Fournisseur? @relation(fields: [fournisseurId], references: [id])
+  paiement        Paiement     @relation(fields: [paiementId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+}
+
+model Panier {
+  id            Int            @id @default(autoincrement())
+  utilisateurId Int
+  utilisateur   Utilisateur    @relation(fields: [utilisateurId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  DetailPanier  DetailPanier[]
+  Achat         Achat[]
+  Vente         Vente[]
+  Reservation   Reservation[]
+  Commande      Commande[]
+}
+
+model DetailPanier {
+  id           Int      @id @default(autoincrement())
+  produitId    Int
+  qtte         Int
+  prixUnitaire Float
+  prixTotal    Float
+  panierId     Int
+  produit      Produit  @relation(fields: [produitId], references: [id])
+  panier       Panier   @relation(fields: [panierId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Achat {
+  id              Int         @id @default(autoincrement())
+  statut          StatutAchat @default(EN_COURS)
+  panierId        Int
+  fournisseurId   Int
+  enregisterParId Int
+  paiementId      Int
+  panier          Panier      @relation(fields: [panierId], references: [id])
+  fournisseur     Fournisseur @relation(fields: [fournisseurId], references: [id])
+  utilisateur     Utilisateur @relation(fields: [enregisterParId], references: [id])
+  paiement        Paiement    @relation(fields: [paiementId], references: [id])
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+enum StatutReservation {
+  EN_ATTENTE
+  CONFIRMEE
+  ANNULEE
+  REJETEE
+  CONVERTIE
+}
+
+enum StatutCommande {
+  EN_ATTENTE_PAIEMENT
+  PAIDEE
+  EN_PREPARATION
+  EN_LIVRAISON
+  LIVREE
+  ANNULEE
+  REMBOURSEE
+  ECHEC_PAIEMENT
+}
+
+// codePostal      String?       @db.VarChar(20) // Facultatif pour RDC (Bukavu)
+// Add Prenom de l'utilisateur en ?
+// prixUnitaireHT  Decimal        @db.Decimal(10, 2)
+// stockActuel     Int
+
+model Reservation {
+  id                     Int               @id @default(autoincrement())
+  dateLivraisonSouhaitee DateTime
+  adresseLivraison       String?           @db.VarChar(255)
+  statut                 StatutReservation @default(EN_ATTENTE)
+  notes                  String?           @db.Text
+  type_client            TypeClient        @default(ordinaire)
+  clientId               Int?
+  panierId               Int
+  nom                    String?
+  tel                    String?
+  adresseId              Int?
+  contactId              Int?
+  enregistrerParId       Int?
+  fournisseurId          Int?
+  panier                 Panier            @relation(fields: [panierId], references: [id])
+  utilisateur            Utilisateur?      @relation(fields: [clientId], references: [id])
+  fournisseur            Fournisseur?      @relation(fields: [fournisseurId], references: [id])
+  adresse                Adresse?          @relation(fields: [adresseId], references: [id])
+  contact                Contact?          @relation(fields: [contactId], references: [id])
+  createdAt              DateTime          @default(now())
+  updatedAt              DateTime          @updatedAt
+}
+
+model Commande {
+  id                     Int            @id @default(autoincrement())
+  // numeroCommande         String         @unique @db.VarChar(50)
+  panierId               Int
+  clientId               Int?
+  nom                    String?
+  tel                    String?
+  type_client            TypeClient     @default(ordinaire)
+  paiementId             Int
+  adresseId              Int?
+  contactId              Int?
+  fournisseurId          Int?
+  notes                  String?        @db.Text
+  dateLivraisonEffective DateTime?
+  adresseLivraison       String?        @db.VarChar(255)
+  enregistrerParId       Int?
+  statut                 StatutCommande @default(EN_ATTENTE_PAIEMENT) // Statut de la commande
+  panier                 Panier         @relation(fields: [panierId], references: [id])
+  client                 Utilisateur?   @relation(fields: [clientId], references: [id])
+  paiement               Paiement       @relation(fields: [paiementId], references: [id])
+  fournisseur            Fournisseur?   @relation(fields: [fournisseurId], references: [id])
+  adresse                Adresse?       @relation(fields: [adresseId], references: [id])
+  contact                Contact?       @relation(fields: [contactId], references: [id])
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+}

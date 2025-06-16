@@ -1,0 +1,102 @@
+{
+  "produits": [
+    {
+      "id": "ciment-32.5",
+      "nom": "Ciment 32.5",
+      "prix": 6500,
+      "unite": "sac de 50kg",
+      "stock": 1250,
+      "seuilCritique": 200,
+      "description": "Ciment Portland 32.5 - Qualité standard pour construction générale"
+    },
+    {
+      "id": "ciment-42.5",
+      "nom": "Ciment 42.5",
+      "prix": 7200,
+      "unite": "sac de 50kg",
+      "stock": 850,
+      "seuilCritique": 150,
+      "description": "Ciment Portland 42.5 - Haute résistance pour ouvrages spéciaux"
+    }
+  ],
+  "commandes": [
+    {
+      "id": "CMD-001",
+      "date": "2024-01-15",
+      "client": "Isaac",
+      "telephone": "+243 01 02 03 04",
+      "email": "akonkwaushindi@email.com",
+      "produit": "Ciment 32.5",
+      "quantite": 50,
+      "prixUnitaire": 6500,
+      "total": 325000,
+      "statut": "livree",
+      "adresse": "Bukavu, RDC",
+      "notes": "Livraison avant 14h",
+      "dateLivraison": "2024-01-16"
+    },
+    {
+      "id": "CMD-002",
+      "date": "2024-01-18",
+      "client": "Ernest K.",
+      "telephone": "+243 05 06 07 08",
+      "email": "ernest.k@email.com",
+      "produit": "Ciment 42.5",
+      "quantite": 25,
+      "prixUnitaire": 7200,
+      "total": 180000,
+      "statut": "en-preparation",
+      "adresse": "Plateau, RDC",
+      "notes": "",
+      "dateLivraisonPrevue": "2024-01-25"
+    }
+  ],
+  "clients": [
+    {
+      "id": "CLT-001",
+      "nom": "Isaac",
+      "entreprise": "Kouassi Construction",
+      "telephone": "+243 01 02 03 04",
+      "email": "akonkwaushindi@email.com",
+      "adresse": "Bukavu, RDC",
+      "dateInscription": "2023-10-15",
+      "statut": "actif"
+    },
+    {
+      "id": "CLT-002",
+      "nom": "Ernest K.",
+      "entreprise": "Diallo BTP",
+      "telephone": "+243 05 06 07 08",
+      "email": "ernest.k@email.com",
+      "adresse": "Plateau, RDC",
+      "dateInscription": "2023-11-20",
+      "statut": "actif"
+    }
+  ],
+  "utilisateurs": [
+    {
+      "id": "USR-001",
+      "nom": "Administrateur",
+      "email": "admin@cimentpro.com",
+      "role": "admin",
+      "statut": "actif",
+      "derniereConnexion": "2024-01-23"
+    },
+    {
+      "id": "USR-002",
+      "nom": "Manager Commercial",
+      "email": "manager@cimentpro.com",
+      "role": "manager",
+      "statut": "actif",
+      "derniereConnexion": "2024-01-22"
+    }
+  ],
+  "statistiques": {
+    "ventesMois": 55000000,
+    "commandesMois": 152,
+    "clientsActifs": 48,
+    "beneficeMois": 12500000,
+    "croissanceVentes": 12,
+    "croissanceCommandes": 8
+  }
+}
