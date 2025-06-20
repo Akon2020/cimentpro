@@ -28,16 +28,8 @@ export async function GET (req: Request, { params }: CaisseRouteParams ) {
         where: {caisseId: parseInt(caisseId)},
         by: ['modePaiement'],
         _sum: {
-            montant: true
+            totalHT: true
         }
-        // paiements: {
-        //     select: {
-        //         id: true,
-        //         montant: true,
-        //         modePaiement: true
-        //     },
-        //     take: 5
-        // }
     });
 
     if (!caisse) return new Response("Caisse not Found", { status: 404 });

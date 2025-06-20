@@ -8,14 +8,14 @@ export async function PUT(request: Request, { params }: ProduitRouteParams) {
     const data: Produit = await request.json();
     
     try {
-        await prisma.produit.update({
+        const produit = await prisma.produit.update({
             where: {
                 id: parseInt(produitId, 10)
             },
             data: data
         });
 
-        return new Response("Produit was updated", { status: 200 });
+        return new Response(JSON.stringify(produit), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify({ error: "Not found" }), { status: 404 });
     }   

@@ -14,7 +14,8 @@ export async function POST(request: NextRequest, { params }: AgentRouteParams) {
                 agentId: parseInt(agentId)
             }
         });
-        return new Response("Fournisseur created!", { status: 201 });
+        return new Response(JSON.stringify(fournisseur), { status: 201 });
+        
     } catch (error) {
         return new Response("Invalid Form!", { status: 201 });
     }

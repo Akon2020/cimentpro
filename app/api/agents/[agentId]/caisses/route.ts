@@ -11,6 +11,7 @@ export async function GET (request: Request, {params}: RouteParams) {
 
     const caisse = await prisma.caisse.findMany({
         select: {
+            id: true,
             nom: true,
             devise: {
                 select: {

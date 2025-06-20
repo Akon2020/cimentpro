@@ -297,11 +297,11 @@ export default function AgentsPage() {
               <TableBody>
                 {filteredAgents.map(agent => (
                   <TableRow key={agent.id}>
-                    <TableCell>{agent.nom} {agent.postnom}</TableCell>
-                    <TableCell>{agent.email}</TableCell>
-                    <TableCell><Badge>{agent.role}</Badge></TableCell>
-                    <TableCell>{agent.poste}</TableCell>
-                    <TableCell>{agent.sexe}</TableCell>
+                    <TableCell>{agent.nom_complet || "N/A"}</TableCell>
+                    <TableCell>{agent.email || "N/A"}</TableCell>
+                    <TableCell><Badge>{agent.role || "N/A"}</Badge></TableCell>
+                    <TableCell>{agent.poste || "N/A"}</TableCell>
+                    <TableCell>{agent.sexe || "N/A"}</TableCell>
                     <TableCell className="space-x-2">
                       <Button size="sm" variant="ghost" onClick={() => handleEdit(agent)}><Edit className="h-4 w-4" /></Button>
                       <Button size="sm" variant="ghost" onClick={() => handleDelete(agent.id)}><Trash2 className="h-4 w-4" /></Button>

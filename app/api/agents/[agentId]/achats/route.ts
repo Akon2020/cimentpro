@@ -9,7 +9,18 @@ export async function GET(request: NextRequest, { params }: AgentRouteParams) {
         agentId: parseInt(agentId)
     }
 
-    const data = await Pagination(request, 'achat', condition, null, null);
+    const selection = {
+        id: true,
+        statut: true,
+        createdAt: true,
+        fournisseur: {
+            select: {
+                nom: true
+            }
+        }
+    }
+
+    const data = await Pagination(request, 'achat', condition, selection, null);
 
     return new Response(JSON.stringify(data), { status: 201 });
 }

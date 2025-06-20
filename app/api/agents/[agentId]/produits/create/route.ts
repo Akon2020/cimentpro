@@ -7,14 +7,14 @@ export async function POST(request: Request, { params }: AgentRouteParams) {
     const { agentId } = await params;
 
     try {
-        await prisma.produit.create({
+        const produit = await prisma.produit.create({
             data: {
                 ...data,
                 agentId: parseInt(agentId)
             }
         });
 
-        return new Response("Produit was created", { status: 201 });
+        return new Response(JSON.stringify(produit), { status: 201 });
         
     } catch (error) {
         return new Response("Invalid Form", { status: 404 });

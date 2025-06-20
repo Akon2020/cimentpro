@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Plus, Search, Edit, Trash2, Eye, DollarSign, TrendingUp, Globe } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import { Textarea } from "@/components/ui/textarea"
+import { createDevise, updateDevise, deleteDevise, getSingleDevise, getAllDevises } from "@/actions/devises"
 
 const devises = [
   {

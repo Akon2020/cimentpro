@@ -9,8 +9,8 @@ export async function POST(req: NextRequest, { params }: PanierParams) {
     data.categorie = 'COMMANDE'
     const { panierId } = await params;
     const dateLivraisonEffective = new Date(data.dateLivraisonEffective);
-    let total_ttc = 0;
-    let total_ht = 0;
+    let totalTTC = 0;
+    let totalHT = 0;
 
     if (panierId) {
         const panier = await prisma.panier.findUnique({
@@ -24,24 +24,15 @@ export async function POST(req: NextRequest, { params }: PanierParams) {
             select: {
                 produitId: true,
                 qtte: true,
-                prixTotal: true
+                prixTotalHT: true
             }
         });
 
         for (let i = 0; i < detail_panier.length; i++) {
-            total_ht += detail_panier[i].prixTotal;
+            totalHT += detail_panier[i].prixTotalHT;
         }
 
-        total_ttc = (total_ht) * 0.16; // Pour une taxe de 16%
-
-        const paiement = await prisma.paiement.create({
-            data: {
-                montant: total_ht,
-                moyen_paiement: data.moyen_paiement,
-                deviseId: data.deviseId,
-                caisseId: parseInt(data.caisseId)
-            }
-        });
+        totalTTC = (totalHT) * 0.16; // Pour une taxe de 16%
 
         const commande = await prisma.commande.create({
             data: {
@@ -50,7 +41,6 @@ export async function POST(req: NextRequest, { params }: PanierParams) {
                 tel: data.client.tel ? data.client.tel : null,
                 type_client: data.type_client,
                 clientId: data.clientId ? parseInt(data.clientId) : null,
-                paiementId: paiement.id,
                 adresseId: data.adresseId ? parseInt(data.adresseId) : null,
                 contactId: data.contactId ? parseInt(data.contactId) : null,
                 fournisseurId: data.fournisseurId ? parseInt(data.fournisseurId) : null,
@@ -61,8 +51,18 @@ export async function POST(req: NextRequest, { params }: PanierParams) {
             }
         });
 
-        UpdateCaisse(total_ht, data);
-        CreateMouvementCaisse(total_ht, commande.id, data);
+        const paiement = await prisma.paiement.create({
+            data: {
+                totalHT: totalHT,
+                modePaiement: data.modePaiement,
+                deviseId: data.deviseId,
+                caisseId: parseInt(data.caisseId),
+                commandeId: commande.id
+            }
+        });
+
+        // UpdateCaisse(totalHT, data);
+        CreateMouvementCaisse(totalHT, commande.id, data);
 
         return new Response("Commande created!", { status: 201 });
 

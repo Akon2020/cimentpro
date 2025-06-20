@@ -15,21 +15,21 @@ export async function POST(request: Request, { params }: AgentRouteParams) {
     try {
         // VERIFIER SI UN OANIER EST EN COURS
         // SINON, CREER UN.
-        if (agentId) {
-            const verifyPanier = await prisma.panier.findFirst({
-                where: { 
-                    agentId: parseInt(agentId),
-                    statut: 'EN_COURS'
-                }
-            });
+        // if (agentId) {
+        //     const verifyPanier = await prisma.panier.findFirst({
+        //         where: { 
+        //             agentId: parseInt(agentId),
+        //             statut: 'EN_COURS'
+        //         }
+        //     });
 
-            if (!verifyPanier) {
+        //     if (!verifyPanier) {
                 await prisma.panier.create({
                     data: { agentId: parseInt(agentId)}
                 });
 
                 return new Response("Panier Created!", { status: 201 });
-            } else {
+            // } else {
 
                 // await prisma.panier.update({
                 //     where: {
@@ -39,10 +39,10 @@ export async function POST(request: Request, { params }: AgentRouteParams) {
                 //     data: { statut: 'EN_COURS' }
                 // });
 
-                return new Response("Statut updated!", { status: 201 });
-            }
+                // return new Response("Statut updated!", { status: 201 });
+            // }
         
-        }
+        // }
         
     } catch (error) {
         return new Response("Invalid Form", { status: 201 });

@@ -10,8 +10,20 @@ export async function GET (request: NextRequest) {
         OR: [{ nom_complet: search ? { contains: search, mode: 'insensitive' } : undefined }] 
     } : {}
 
-    const data = await Pagination(request, 'client', condition, null, null);
+    const selection = {
+        picture: true,
+        nom_complet: true,
+        email: true,
+        adresses: {
+            select: {
+                ville: true,
+                adresse: true
+            }
+        }
+    }
 
-    return new Response(JSON.stringify(data), { status: 201 });
+    const clients = await Pagination(request, 'client', condition, selection, null);
+
+    return new Response(JSON.stringify(clients), { status: 201 });
 }
 

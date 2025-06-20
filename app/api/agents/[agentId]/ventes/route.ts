@@ -8,14 +8,11 @@ export async function GET(request: NextRequest) {
     }
 
     const selection = {
+        id: true,
         statut: true,
-        panier: true,
-        // detailPanier: true,
-        totalHT: true,
-        totalTTC: true,
-        typeAcheteur: true,
-        paiement: {
+        paiements: {
             select: {
+                totalHT: true,
                 devise: {
                     select: {
                         symbole: true
@@ -26,14 +23,16 @@ export async function GET(request: NextRequest) {
         client: {
             select: {
                 nom_complet: true,
-                email: true,
-                // contact: true,
+            },
+        },
+        fournisseur: {
+            select: {
+                nom: true,
             },
         },
         agent: {
             select: {
                 nom_complet: true,
-                poste: true
             }
         }
     }

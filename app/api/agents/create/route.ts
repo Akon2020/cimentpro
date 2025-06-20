@@ -14,9 +14,9 @@ export async function POST(request: NextRequest) {
         });
     }
 
-    const user = await verify(data.email);   
+    const agent = await verify(data.email);   
 
-    if (!user) {
+    if (!agent) {
         const user = await prisma.agent.create({
             data: {
                 ...data,
@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
             }
         });
         
-        return new Response("Agent created!", { status: 201 });
+        return new Response(JSON.stringify(agent), { status: 201 });
     }
-    return new Response(JSON.stringify(data), { status: 201 });
+    return new Response("Agent Existed!", { status: 201 });
 }
 

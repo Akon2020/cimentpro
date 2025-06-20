@@ -11,11 +11,17 @@ export async function GET(request: NextRequest) {
     } : {}
 
     const selection = {
+        id: true,
         nom_complet: true,
-        email: true
+        nom: true,
+        postnom: true,
+        email: true,
+        role: true,
+        poste: true,
+        sexe: true,
     }
 
-    const data = await Pagination(request, 'Agent', condition, selection, null);
+    const data = await Pagination(request, 'agent', condition, selection, null);
 
     return new Response(JSON.stringify(data), { status: 200 }); 
 }

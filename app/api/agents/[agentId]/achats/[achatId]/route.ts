@@ -11,10 +11,30 @@ export async function GET(request: NextRequest, { params }: AchatRouteParams) {
 
     if (!agent) return new Response("Agent Not Found!", { status: 404 });
 
-    // return await Table(request, 'agent', '2', null);
-
     const achat = await prisma.achat.findUnique({
-        where: { id: parseInt(achatId) }
+        where: { id: parseInt(achatId) },
+        select: {
+            id: true,
+            statut: true,
+            createdAt: true,
+            fournisseur: {
+                select: {
+                    nom: true
+                }
+            },
+            paiements: {
+                select: {
+                    totalHT: true,
+                    totalTTC: true,
+                    modePaiement: true,
+                    devise: {
+                        select: {
+                            symbole: true
+                        }
+                    }
+                }
+            },
+        }
     });
 
     if (!achat) return new Response("Achat Not Found!", { status: 404 });

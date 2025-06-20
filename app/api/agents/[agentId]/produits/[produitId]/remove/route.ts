@@ -18,12 +18,12 @@ export async function DELETE(req: Request, { params }: ProduitRouteParams) {
 
     try {
         await prisma.produit.delete({
-            where: {
-                id: parseInt(produitId, 10),
-            }
-        });    
+            where: { id: parseInt(produitId) }
+        });
+        
+        const produits = await prisma.produit.findMany({});
 
-        return new Response("Produit was deleted", { status: 201 }); 
+        return new Response(JSON.stringify(produits), { status: 201 }); 
 
     } catch (error) {
         return new Response(JSON.stringify({ error: "Error" }), { status: 404 });
